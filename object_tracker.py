@@ -1,6 +1,5 @@
-import os
 # comment out below line to enable tensorflow logging outputs
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import time
 import tensorflow as tf
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -37,6 +36,11 @@ flags.DEFINE_float('score', 0.50, 'score threshold')
 flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
+
+import requests
+import urllib3
+urllib3.disable_warnings()
+from tools import splunk
 
 def main(_argv):
     # Definition of the parameters
@@ -101,7 +105,7 @@ def main(_argv):
             print('Video has ended or failed, try a different video format!')
             break
         frame_num +=1
-        print('Frame #: ', frame_num)
+        #print('Frame #: ', frame_num)
         frame_size = frame.shape[:2]
         image_data = cv2.resize(frame, (input_size, input_size))
         image_data = image_data / 255.
@@ -157,10 +161,10 @@ def main(_argv):
         class_names = utils.read_class_names(cfg.YOLO.CLASSES)
 
         # by default allow all classes in .names file
-        allowed_classes = list(class_names.values())
+        # allowed_classes = list(class_names.values())
         
         # custom allowed classes (uncomment line below to customize tracker for only people)
-        #allowed_classes = ['person']
+        allowed_classes = ['car', 'stop sign', 'motorbike', 'bus', 'train', 'truck', 'boat', 'aeroplane', 'bird', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'skateboard', 'frisbee', 'sports ball', 'baseball glove', 'tennis racket', 'bottle', 'wine glass', 'cup', 'banana', 'apple', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'mouse', 'remote', 'toaster', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
 
         # loop through objects and use class index to get class name, allow only classes in allowed_classes list
         names = []
@@ -215,12 +219,16 @@ def main(_argv):
             cv2.putText(frame, class_name + "-" + str(track.track_id),(int(bbox[0]), int(bbox[1]-10)),0, 0.75, (255,255,255),2)
 
         # if enable info flag then print details about each track
-            if FLAGS.info:
-                print("Tracker ID: {}, Class: {},  BBox Coords (xmin, ymin, xmax, ymax): {}".format(str(track.track_id), class_name, (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))))
-
+            if FLAGS.info and track.hits == 4:
+                #fps = 1.0 / (time.time() - start_time)
+                #print('Frame #: ', frame_num)
+                #print("FPS: %.2f" % fps)
+                print("FPS: %.2f" % fps, "Frame #: {}, Tracker ID: {}, Class: {}, BBox Coords (xmin, ymin, xmax, ymax): {}".format(frame_num, str(track.track_id), class_name, (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))))
+                data = {'index':'test', 'sourcetype':'json_no_timestamp', 'source':'tracker', 'host':'maclaptop', 'event':{'FPS':round(fps, 2), 'Frame':format(frame_num), 'TrackerID':str(track.track_id), 'Class':class_name, 'xmin':int(bbox[0]),'ymin':int(bbox[1]), 'xmax':int(bbox[2]), 'ymax':int(bbox[3])}}
+                r = requests.post(splunk.splunk_ep, headers=splunk.headers2, json=data, verify=False)
         # calculate frames per second of running detections
         fps = 1.0 / (time.time() - start_time)
-        print("FPS: %.2f" % fps)
+        #print("FPS: %.2f" % fps)
         result = np.asarray(frame)
         result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         
