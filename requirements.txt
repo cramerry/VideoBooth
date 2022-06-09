@@ -6,3 +6,5 @@ absl-py
 easydict
 matplotlib
 pillow
+requests
+urllib3
