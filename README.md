@@ -4,6 +4,7 @@
 Object Tracking pipeline leveraging YOLOv4, DeepSORT, and Tensorflow.  DeepSORT (Simple Online and Realtime Tracking 
 with a Deep Association Metric) uses deep convolutional neural networks to perform object detection.
 
+![alt text](https://github.com/cramerry/VideoBooth/blob/main/Screen%20Shot%202022-06-10%20at%202.45.32%20PM.png?raw=true)
 ### Installation
   * It is recommended to first 
   * Download model weights, place in /data directory.
