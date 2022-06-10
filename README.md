@@ -25,6 +25,11 @@ and displays results in near real-time.
 python object_tracker.py --weights ./checkpoints/yolov4-tiny-416 --model yolov4 --video 0 --tiny --info
 ```
 
+### Tips
+  * Detections:  Try various angles/rotations of each object, adjust distance (move closer and further away) from the 
+    camera.
+
+
 ### Acknowledgments/References
 ![alt text](https://miro.medium.com/max/1400/0*-S2EkuGhkP9tp9It.JPG)
   * [https://github.com/theAIGuysCode/yolov4-deepsort](https://github.com/theAIGuysCode/yolov4-deepsort)
