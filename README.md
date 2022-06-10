@@ -2,10 +2,10 @@
 
 ### Introduction
 Object Tracking pipeline leveraging YOLOv4, DeepSORT, and Tensorflow.  DeepSORT (Simple Online and Realtime Tracking 
-with a Deep Association Metric) uses deep convolutional neural networks to perform object 
-detection.
+with a Deep Association Metric) uses deep convolutional neural networks to perform object detection.
 
 ### Installation
+  * It is recommended to first 
   * Download model weights, place in /data directory.
   * Create a tools/splunk.py file with Splunk HEC endpoint & headers, example:
     
