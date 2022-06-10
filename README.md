@@ -2,7 +2,9 @@
 
 ### Introduction
 Object Tracking pipeline leveraging YOLOv4, DeepSORT, and Tensorflow.  DeepSORT (Simple Online and Realtime Tracking 
-with a Deep Association Metric) uses deep convolutional neural networks to perform object detection.
+with a Deep Association Metric) uses deep convolutional neural networks to perform object detection.  Detections,
+Inference time, and FPS are sent to Splunk via HEC.  Splunk tracks detections over time, object preferences/popularity,
+and displays results in near real-time.
 
 ![alt text](https://github.com/cramerry/VideoBooth/blob/main/Screen%20Shot%202022-06-10%20at%202.45.32%20PM.png?raw=true)
 ### Installation
